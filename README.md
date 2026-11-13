@@ -4,6 +4,8 @@ A calm Windows workspace for tasks and notes. Move tasks through **To do → Doi
 
 ![Zentro task board](docs/preview.png)
 
+[Download for Windows x64](https://github.com/Zorak01/Zentro/releases/latest/download/Zentro.exe)
+
 ## Use
 
 Run `Zentro.exe` from the Windows x64 release. No separate .NET installation, account, or network connection required. Keep one copy open at a time.

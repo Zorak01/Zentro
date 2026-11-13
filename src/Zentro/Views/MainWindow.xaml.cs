@@ -80,12 +80,12 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void ColumnLeave(object sender, DragEventArgs e) => ((BoardColumn)sender).ClearValue(Control.BorderBrushProperty);
+    private void ColumnLeave(object sender, DragEventArgs e) => ((BoardColumn)sender).SetResourceReference(Control.BorderBrushProperty, "ColumnBorder");
 
     private void ColumnDrop(object sender, DragEventArgs e)
     {
         var column = (BoardColumn)sender;
-        column.ClearValue(Control.BorderBrushProperty);
+        column.SetResourceReference(Control.BorderBrushProperty, "ColumnBorder");
         if (e.Data.GetData(DragFormat) is string id && column.ColumnTitle is string status) model.Move(id, status);
         e.Handled = true;
     }
