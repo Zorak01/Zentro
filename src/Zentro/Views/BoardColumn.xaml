@@ -1,0 +1,28 @@
+<UserControl x:Class="Zentro.Views.BoardColumn" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Name="Column" BorderBrush="#252A35">
+  <Border Style="{StaticResource Column}" BorderBrush="{Binding BorderBrush, ElementName=Column}">
+    <Grid>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <DockPanel Margin="3,2,1,16">
+        <Button Content="+" DockPanel.Dock="Right" Background="Transparent" Padding="6,0" FontSize="18"
+                Click="AddClick" ToolTip="Add a task" IsEnabled="{Binding DataContext.CanWrite, RelativeSource={RelativeSource AncestorType=Window}}"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <Ellipse Fill="{Binding Tone, ElementName=Column}" Width="7" Height="7" Margin="0,0,9,0"/>
+          <TextBlock Text="{Binding ColumnTitle, ElementName=Column}" FontWeight="SemiBold" Foreground="#C6CDDB"/>
+          <Border Background="#232832" CornerRadius="4" Padding="6,1" Margin="9,0,0,0">
+            <TextBlock Text="{Binding Items.Length, ElementName=Column, Mode=OneWay}" Foreground="#949FB5" FontSize="11"/>
+          </Border>
+        </StackPanel>
+      </DockPanel>
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ItemsControl ItemsSource="{Binding Items, ElementName=Column}" ItemTemplate="{Binding CardTemplate, ElementName=Column}"/>
+      </ScrollViewer>
+      <TextBlock Grid.Row="1" Text="Drop a task here" Foreground="#79869F" FontSize="12" HorizontalAlignment="Center"
+                 VerticalAlignment="Top" Margin="0,25,0,0" IsHitTestVisible="False">
+        <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/>
+          <Style.Triggers><DataTrigger Binding="{Binding Items.Length, ElementName=Column}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+        </Style></TextBlock.Style>
+      </TextBlock>
+    </Grid>
+  </Border>
+</UserControl>
