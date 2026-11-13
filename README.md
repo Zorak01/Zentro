@@ -1,55 +1,32 @@
 # Zentro
 
-A calm Windows workspace for tasks and notes. Move tasks through **To do → Doing → Done**, capture ideas, and find them quickly. Dark surfaces, purple-blue accents, and an original flat purple-blue mark.
+Tasks and notes for Windows.
 
-![Zentro task board](docs/preview.png)
+[Download](https://github.com/Zorak01/Zentro/releases/latest/download/Zentro.exe) · [Releases](https://github.com/Zorak01/Zentro/releases)
 
-[Download for Windows x64](https://github.com/Zorak01/Zentro/releases/latest/download/Zentro.exe)
+![Zentro](docs/preview.png)
 
-## Use
+Drag tasks between To do, Doing, and Done. Click a card to edit it. Notes have their own view. Search covers titles and text.
 
-Run `Zentro.exe` from the Windows x64 release. No separate .NET installation, account, or network connection required. Keep one copy open at a time.
+`Ctrl+N` new · `Ctrl+F` search · `Ctrl+S` save · `Esc` cancel
 
-- Click a card or focus it and press **Enter** to edit.
-- Drag tasks between columns, or change status in the editor.
-- Choose **My notes** to capture ideas.
-- **Ctrl+N** creates; **Ctrl+F** searches; **Ctrl+S** saves in the editor; **Esc** cancels.
-- **Undo** reverses your last saved action, including deletion. **Ctrl+Z** does the same when you are outside a text field.
+Undo restores the last change, including deleted tasks and notes.
 
-Only explicit saves persist editor changes. Search is local and includes titles and details. Empty workspaces start clean, without sample tasks.
+## Development
 
-## Build
-
-Windows and the .NET 9 SDK are required for development. There are no third-party runtime dependencies.
+Requires Windows and the .NET 9 SDK.
 
 ```powershell
-./build.ps1          # run workspace checks and build
-./build.ps1 -Publish # create artifacts/Zentro/Zentro.exe
+./build.ps1
+./build.ps1 -Publish
 ```
 
-GitHub Actions runs the same checks and builds a downloadable Windows executable on each push.
+The first command runs the checks and builds the app. The second also produces `artifacts/Zentro/Zentro.exe` with the runtime included.
 
-## Layout
+App code is in `src/Zentro`. Workspace checks are in `tests/Zentro.Checks`.
 
-```text
-src/Zentro/
-  Assets/        Final PNG and multi-size Windows icon
-  Models/        Workspace record
-  Services/      JSON persistence and legacy import
-  ViewModels/    Filtering, updates, undo, save state
-  Views/         Board, reusable column, and editor
-  Styles/        Shared visual theme
-tests/Zentro.Checks/   Dependency-free workspace checks
-```
+## Data
 
-`bin`, `obj`, and `artifacts` are ignored. Generated alternatives, credentials, user data, and binaries do not belong in Git.
+Saved locally to `%LOCALAPPDATA%/Zentro/workspace.json`. The previous save is kept as `workspace.json.bak`.
 
-## Your data
-
-Everything stays in `%LOCALAPPDATA%/Zentro/workspace.json`. The last saved version is kept at `workspace.json.bak`. Writes replace the file atomically; failed saves leave the visible workspace unchanged. Invalid files are preserved and editing is disabled until you restore a valid workspace and restart.
-
-On first launch, Zentro imports the earlier organiZe workspace if present, leaving the old file untouched. Close the old app before migrating, and use Zentro going forward. Undo is in memory and resets on restart. Back up the data folder to move your workspace to another computer.
-
-## Branding
-
-The included purple-blue mark was generated for Zentro using OpenAI image generation. It uses a simple stepped motif, distinct from the Zorak website logo.
+Existing organiZe data is imported on first launch. The original file is kept.

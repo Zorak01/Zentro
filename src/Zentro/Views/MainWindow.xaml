@@ -41,7 +41,7 @@
       <Border Background="#15181F" BorderBrush="#242A35" BorderThickness="0,0,0,1">
         <DockPanel Margin="16,0,6,0">
           <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-            <Button Content="—" Style="{StaticResource CaptionButton}" ToolTip="Minimize" Click="MinimizeClick"/>
+            <Button Content="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10" Style="{StaticResource CaptionButton}" ToolTip="Minimize" Click="MinimizeClick"/>
             <Button Content="□" Style="{StaticResource CaptionButton}" ToolTip="Maximize or restore" Click="MaximizeClick"/>
             <Button Content="×" FontSize="19" Style="{StaticResource CaptionButton}" ToolTip="Close" Click="CloseClick"/>
           </StackPanel>

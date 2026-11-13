@@ -14,7 +14,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private bool notes;
     public event PropertyChangedEventHandler? PropertyChanged;
     public bool CanWrite { get; private set; } = true;
-    public string SaveStatus { get; private set; } = "●  Saved on this device";
+    public string SaveStatus { get; private set; } = "Saved locally";
     public string Notice { get; private set; } = "";
     public bool HasNotice => Notice.Length > 0;
     public bool CanUndo => undoSnapshot != null;
@@ -22,18 +22,37 @@ public sealed class MainViewModel : INotifyPropertyChanged
     public string Query { get => query; set { query = value; Refresh(); } }
     public bool IsNotes { get => notes; set { notes = value; Refresh(); } }
     public string Heading => notes ? "Notes" : "Task board";
-    public string Subtitle => notes ? "Ideas, plans, and everything worth keeping." : "A clear view of what’s next.";
+    public string Subtitle => notes ? "Write and search notes." : "Track tasks from To do to Done.";
     public string AddLabel => notes ? "+  New note" : "+  New task";
     public string SearchHint => notes ? "Search notes…" : "Search tasks…";
-    public string Summary => query.Length > 0 ? $"{Filtered.Count()} matching {(notes ? "notes" : "tasks")}" : notes ? $"{Filtered.Count()} notes · just for you" : $"{items.Count(i => !i.Note && i.Status == "Done")} completed / {items.Count(i => !i.Note)} tasks";
+    public string Summary
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                string kind = notes ? "notes" : "tasks";
+                return $"{Filtered.Count()} matching {kind}";
+            }
+
+            if (notes)
+            {
+                return $"{Filtered.Count()} notes";
+            }
+
+            int total = items.Count(i => !i.Note);
+            int completed = items.Count(i => !i.Note && i.Status == "Done");
+            return $"{completed} completed / {total} tasks";
+        }
+    }
     public IEnumerable<WorkspaceItem> Filtered => items.Where(i => i.Note == notes && (i.Title + " " + i.Body).Contains(query.Trim(), StringComparison.OrdinalIgnoreCase)).OrderByDescending(i => i.Updated);
     public WorkspaceItem[] Todo => Filtered.Where(i => i.Status == "To do").ToArray();
     public WorkspaceItem[] Doing => Filtered.Where(i => i.Status == "Doing").ToArray();
     public WorkspaceItem[] Done => Filtered.Where(i => i.Status == "Done").ToArray();
     public WorkspaceItem[] Notes => Filtered.ToArray();
     public bool Empty => !Filtered.Any();
-    public string EmptyTitle => query.Length > 0 ? "No matches found" : notes ? "Your notes start here" : "Your board is ready";
-    public string EmptyBody => query.Length > 0 ? "Try another keyword or clear the search." : notes ? "Add a note to capture an idea." : "Add your first task to get started.";
+    public string EmptyTitle => query.Length > 0 ? "No matches found" : notes ? "No notes" : "No tasks";
+    public string EmptyBody => query.Length > 0 ? "Try another keyword or clear the search." : notes ? "Create a note." : "Create a task.";
 
     public MainViewModel(WorkspaceStore? store = null)
     {
@@ -49,7 +68,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     public string? Commit(WorkspaceItem item)
     {
-        if (string.IsNullOrWhiteSpace(item.Title)) return "Give this a title first.";
+        if (string.IsNullOrWhiteSpace(item.Title)) return "Enter a title.";
         var next = items.Where(i => i.Id != item.Id).Append(item).ToList();
         return Apply(next, "Saved.");
     }
@@ -61,7 +80,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         return Commit(item with { Status = status, Updated = DateTime.Now });
     }
 
-    public string? Delete(WorkspaceItem item) => Apply(items.Where(i => i.Id != item.Id).ToList(), $"{(item.Note ? "Note" : "Task")} deleted. Undo to bring it back.");
+    public string? Delete(WorkspaceItem item) => Apply(items.Where(i => i.Id != item.Id).ToList(), $"{(item.Note ? "Note" : "Task")} deleted.");
 
     public void Undo()
     {
@@ -83,7 +102,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         undoSnapshot = items;
         items = next;
-        SaveStatus = "●  Saved on this device";
+        SaveStatus = "Saved locally";
         Notice = message;
         Refresh();
         return null;

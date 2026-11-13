@@ -4,7 +4,6 @@ using Zentro.Models;
 
 namespace Zentro.Services;
 
-/// <summary>All disk access lives here. Writes replace the file only after serialization succeeds.</summary>
 public sealed class WorkspaceStore
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true };
@@ -39,8 +38,8 @@ public sealed class WorkspaceStore
         {
             if (item == null || string.IsNullOrWhiteSpace(item.Id) || !ids.Add(item.Id)
                 || string.IsNullOrWhiteSpace(item.Title) || item.Body == null
-                || !new[] { "To do", "Doing", "Done" }.Contains(item.Status)
-                || !new[] { "Low", "Normal", "High" }.Contains(item.Priority))
+                || !WorkspaceOptions.Statuses.Contains(item.Status)
+                || !WorkspaceOptions.Priorities.Contains(item.Priority))
                 throw new InvalidDataException("The workspace contains an invalid item. Your file has been left untouched.");
         }
         return items;

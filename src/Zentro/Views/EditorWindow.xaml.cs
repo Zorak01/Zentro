@@ -17,12 +17,12 @@ public partial class EditorWindow : Window
         this.workspace = workspace;
         Title = Heading.Text = $"{(existing ? "Edit" : "New")} {(item.Note ? "note" : "task")}";
         SaveButton.Content = item.Note ? "Save note" : "Save task";
-        BodyLabel.Content = item.Note ? "_Your thoughts" : "_Details";
+        BodyLabel.Content = item.Note ? "_Text" : "_Details";
         TitleBox.Text = item.Title;
         BodyBox.Text = item.Body;
-        StatusBox.ItemsSource = new[] { "To do", "Doing", "Done" };
+        StatusBox.ItemsSource = WorkspaceOptions.Statuses;
         StatusBox.SelectedItem = item.Status;
-        PriorityBox.ItemsSource = new[] { "Low", "Normal", "High" };
+        PriorityBox.ItemsSource = WorkspaceOptions.Priorities;
         PriorityBox.SelectedItem = item.Priority;
         TaskOptions.Visibility = item.Note ? Visibility.Collapsed : Visibility.Visible;
         DeleteButton.Visibility = existing ? Visibility.Visible : Visibility.Collapsed;
@@ -34,7 +34,12 @@ public partial class EditorWindow : Window
 
     private void Save()
     {
-        if (string.IsNullOrWhiteSpace(TitleBox.Text)) { ErrorText.Text = "Give this a title first."; TitleBox.Focus(); return; }
+        if (string.IsNullOrWhiteSpace(TitleBox.Text))
+        {
+            ErrorText.Text = "Enter a title.";
+            TitleBox.Focus();
+            return;
+        }
         var item = original with
         {
             Title = TitleBox.Text.Trim(),
@@ -44,14 +49,22 @@ public partial class EditorWindow : Window
             Updated = DateTime.Now
         };
         string? error = workspace.Commit(item);
-        if (error != null) { ErrorText.Text = error; return; }
+        if (error != null)
+        {
+            ErrorText.Text = error;
+            return;
+        }
         DialogResult = true;
     }
 
     private void DeleteClick(object sender, RoutedEventArgs e)
     {
         string? error = workspace.Delete(original);
-        if (error != null) { ErrorText.Text = error; return; }
+        if (error != null)
+        {
+            ErrorText.Text = error;
+            return;
+        }
         DialogResult = true;
     }
 }

@@ -10,7 +10,7 @@
     </Grid.RowDefinitions>
     <StackPanel>
       <DockPanel><Button Content="×" IsCancel="True" DockPanel.Dock="Right" Padding="8,2" Background="Transparent" FontSize="20" WindowChrome.IsHitTestVisibleInChrome="True"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold"/></DockPanel>
-      <TextBlock Text="Keep it simple. Make it actionable." Style="{StaticResource Muted}" Margin="0,7,0,22"/>
+      <Border Height="22"/>
     </StackPanel>
     <StackPanel Grid.Row="1">
       <Label Content="_Title" Target="{Binding ElementName=TitleBox}" Foreground="#AAB3CD" Padding="0,0,0,7"/>
